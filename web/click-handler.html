@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全 / Web端 / 点击劫持</title>
+</head>
+
+<body>
+
+    <!-- 
+        点击劫持
+
+        第三方网站通过iframe内嵌某一个网站，并且将iframe设置为透明不可见，
+        将其覆盖在其他经过伪装的DOM上，伪装的可点击DOM（按钮等）与实际内嵌网站的可点击DOM位置相同，
+        当用户点击伪装的DOM时，实际上点击的是iframe中内嵌的网页的DOM从而触发请求操作。
+
+        如何防御？
+
+        1）设置http响应头 X-Frame-Options，有三个值： 
+            DENY（禁止内嵌） 
+            SAMEORIGIN（只允许同域名页面内嵌） 
+            ALLOW-FROM（指定可以内嵌的地址）
+
+     -->
+
+</body>
+
+</html>

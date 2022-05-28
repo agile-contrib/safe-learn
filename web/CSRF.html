@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全 / Web端 / CSRF攻击</title>
+    <script src="./node_modules/@hai2007/xhr/dist/xhr.js"></script>
+</head>
+
+<body>
+
+    <!-- 
+        CSRF（Cross Site Request Forgy）跨站请求伪造
+     -->
+
+    <script>
+
+        /**
+         * 我们提前打开了 https://gitee.com/hai2007 这个网站，并登录成功
+         * 然后，打开这个网页，可以看见，下面的请求携带了同样的cookie
+        */
+
+        xhr({
+
+            method: "GET",// 请求方法
+            url: "https://gitee.com/hai2007",// 请求地址
+            header: {},// 请求头，可选
+            timeout: 6000,// 请求超时时间，可选
+
+        }, function (data) {
+
+            // 成功回调
+
+        }, function (error) {
+
+            // 错误回调
+
+        });
+
+        /**
+         * 由于现在浏览器开启了同源策略，你可能会看见这个错误：
+         * Access to XMLHttpRequest at 'https://gitee.com/hai2007' from origin 'http://127.0.0.1:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+         * 你可以关闭这个策略：
+         * 
+         * 【Mac】
+         * 
+         * open -n /Applications/Google\ Chrome.app/ --args --disable-web-security --user-data-dir=/Users/hai2007/Desktop/chrome-data
+         * 
+        */
+
+    </script>
+
+    <!-- 
+
+        如何防御？
+
+        1）比如前端网页打开的时候，生成一个csrf-tooken，添加到cookie中，
+        每次发生请求的时候，请求body也加上这个字段，
+        服务器接收到请求的时候，判断这2个字段是否相同。
+
+        2）SameSite 
+            相应头 set-cookie 新增的属性，例子：
+            set-cookie: expires=Wed, 17-Apr-2024 02:13:04 GMT; path=/; Secure; HttpOnly; SameSite=none
+
+            SameSite属性可以设置三个值：Strict、Lax、None
+
+            - Strict：严格，完全禁止第三方获取cookie，跨站点时，任何情况下都不会发送cookie；只有当前网页的 URL 与请求目标一致，才会带上 Cookie。
+            - Lax：防范跨站，大多数情况下禁止获取cookie，除非导航到目标网址的GET请求（链接、预加载、GET表单）；设置了Strict或Lax以后，基本就杜绝了 CSRF 攻击。
+            - SameSite属性的默认SameSite=Lax
+
+        3）验证码
+
+     -->
+
+</body>
+
+</html>

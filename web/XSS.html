@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全 / Web端 / XSS攻击</title>
+</head>
+
+<body>
+
+    <!-- 
+        XSS（Cross Site Scripting）跨站脚本攻击
+
+        1.原理：页面渲染的数据中包含可运行的脚本
+
+        2.攻击的基础类型：反射型（url参数直接注入）和存储型（存储到DB后读取时注入）
+
+        3.注入点：
+
+     -->
+
+    <!--HTML节点内容注入-->
+    <div id="el1"></div>
+    <script>
+
+        // 下面的代码不会生效，如果你在浏览器控制台运行就会看见：
+        // '\x3Cscript>alert(1);\x3C/script>'
+        // 应该是对script这种特殊的标签进行了转义
+        document.getElementById('el1').innerHTML = "<script>alert(1);<\/script>";
+    </script>
+
+    <!-- 引诱用户触发 -->
+    <div id="el2"></div>
+    <script>
+
+        // 和很多方法类似，如果用户主动触发一次，就可以了
+        document.getElementById('el2').innerHTML = "<button onclick='alert(1)'>点击我</button>";
+    </script>
+
+    <!-- DOM属性注入，在加载图片失败的时候，会调用该元素上的onerror事件 -->
+    <div id="el3"></div>
+    <script>
+
+        // 上面虽然成功了，可是需要用户主动触发
+        // 下面的利用图片加载失败的回调触发
+        document.getElementById('el3').innerHTML = " <img src='/images-404.png' onerror='alert(\"图片加载失败，该我触发了～\");'>";
+    </script>
+
+    <!-- 
+
+        4.防御：
+
+            1）X-XSS-Protection，浏览器自带防御机制，现在主流浏览器都支持，并且默认都开启了XSS保护，用这个header可以关闭它。它有几种配置：
+
+                0：禁用XSS保护；
+                1：启用XSS保护；
+                1; mode=block：启用XSS保护，并在检查到XSS攻击时，停止渲染页面（例如IE8中，检查到攻击时，整个页面会被一个#替换）；
+
+            2）对特定字符做转义
+
+            3）CSP（Content Security Policy）内容安全策略，用于指定哪些内容可执行
+
+                //我们可以在http响应头中设置Content-Security-Policy
+                //图片可以从任何地方加载(注意 "*" 通配符)
+                //多媒体文件仅允许从 media1.com 和 media2.com 加载(不允许从这些站点的子域名)
+                //可运行脚本仅允许来自于 userscripts.example.com
+                Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com
+
+                //同时meta中也支持设置Content-Security-Policy
+                <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://*; child-src 'none';">
+
+     -->
+
+</body>
+
+</html>

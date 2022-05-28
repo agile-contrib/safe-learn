@@ -1,0 +1,12 @@
+{
+  "name": "safe-web-learn",
+  "version": "1.0.0",
+  "scripts": {
+    "server": "nodejs -s"
+  },
+  "author": "你好2007",
+  "devDependencies": {
+    "@hai2007/nodejs": "^3.0.1",
+    "@hai2007/xhr": "^0.1.2"
+  }
+}
